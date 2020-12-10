@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="/jslib/jquery-1.9.1.js?v=1"></script>
+    <link href="/bootstrap-3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <meta charset="utf-8">
+    <title>Aria2配置</title>
+    <script>
+        $(document).ready(function () {
+            $.ajaxSetup({
+                cache: false //关闭AJAX相应的缓存
+            });
+            $("#aria2").load("../config/aria2.conf");
+        });
+        function reload() {
+            $("#aria2").load("../config/default.conf");
+        }
+
+
+    </script>
+</head>
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        color: #333;
+        font-size: 15px;
+        font-family: "Microsoft Yahei";
+    }
+
+    body {
+        background: url(/images/bg.jpg) repeat;
+        background-attachment: fixed;
+        font-family: "Microsoft Yahei";
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font-family: "Microsoft Yahei";
+    }
+
+    img {
+        border: none;
+    }
+
+    #wrapper {
+        min-width: 750px;
+        min-height: 100%;
+        position: relative;
+    }
+
+    .mybox {
+        background: #fff;
+        color: #333
+    }
+
+    .mybox a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    .mybox a:hover {
+        text-decoration: none;
+        color: #960;
+    }
+
+    .roundbox {
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .bodybox {
+        padding-bottom: 70px;
+    }
+</style>
+
+<body>
+    <div id="wrapper">
+        <div class="bodybox">
+            <div class="container">
+                <div class="mybox roundbox" style="padding:10px; margin:20px 0 20px 0;">
+                    <h3>加载默认配置后需重新保存(需PHP环境，手动重启Aria2后配置生效)</h3>
+                    <div id="app">
+                        <form method="post" action="config.php">
+                            <textarea class="form-control" rows="40" name="aria2" id="aria2"></textarea>
+                            <div style="padding:5px 0;">
+                                <input type="submit" id="submit" value="保存配置"></input>
+                                <input type="button" onclick="reload()" value="加载默认配置"></input>  
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

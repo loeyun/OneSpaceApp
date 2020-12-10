@@ -1,0 +1,74 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: verysync
+# Required-Start: $local_fs $remote_fs
+# Required-Stop: $local_fs $remote_fs
+# Should-Start: $network
+# Should-Stop: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Multi-user daemonized version of verysync.
+# Description: Starts the verysync daemon for all registered users.
+### END INIT INFO
+
+# Replace with users you want to run verysync clients for
+# verysync_USERS="<your name here>"
+verysync_USERS="root"
+OPTIONS="-gui-address :8886 -home /usr/local/verysync/var"
+DAEMON="/usr/local/verysync/verysync"
+
+if [ ! -f "$DAEMON" ]; then
+    DAEMON=`which verysync`
+fi
+
+startd() {
+  if [ "$DAEMON" == "" ]; then
+    echo "Not installed verysync or verysync is not in the environment PATH"
+    exit 1;
+  fi
+  for stuser in $verysync_USERS; do
+    HOMEDIR=$(getent passwd $stuser | awk -F: '{print $6}')
+    if [ -f $config ]; then
+      start-stop-daemon -b -o -c $stuser -S -u $stuser -x "$DAEMON" -- $OPTIONS
+    else
+      echo "Couldn't start verysync for $stuser (no $config found)"
+    fi
+  done
+}
+
+stopd() {
+  for stuser in $verysync_USERS; do
+    dbpid=$(pgrep -f $DAEMON)
+    if [ ! -z "$dbpid" ]; then
+      echo "Stopping verysync for $stuser"
+      start-stop-daemon -o -c $stuser -K -u $stuser -x $DAEMON
+    fi
+  done
+}
+
+status() {
+  for stuser in $verysync_USERS; do
+    dbpid=$(pgrep -f $DAEMON)
+    if [ -z "$dbpid" ]; then
+      echo "verysync for USER $stuser: not running."
+    else
+      echo "verysync for USER $stuser: running (pid $dbpid)"
+    fi
+  done
+}
+
+case "$1" in
+  start) startd
+    ;;
+  stop) stopd
+    ;;
+  restart|reload|force-reload) stopd && startd
+    ;;
+  status) status
+    ;;
+  *) echo "Usage: /etc/init.d/verysync {start|stop|reload|force-reload|restart|status}"
+     exit 1
+   ;;
+esac
+
+exit 0

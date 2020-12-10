@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+#
+# PROVIDE: verysync
+# REQUIRE: DAEMON
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf to enable this service:
+#
+# verysync_enable:       Set to NO by default. Set it to YES to enable it.
+# verysync_home:         Directory where verysync configuration
+#                         data is stored.
+#                         Default: /usr/local/etc/verysync
+# verysync_log_file:     verysync log file
+#                         Default: /var/log/verysync.log
+# verysync_user:         The user account verysync daemon runs as what
+#                         you want it to be.
+#                         Default: verysync
+# verysync_group:        The group account verysync daemon runs as what
+#                         you want it to be.
+#                         Default: verysync
+
+. /etc/rc.subr
+
+name=verysync
+rcvar=verysync_enable
+
+start_cmd="${name}_start"
+
+load_rc_config $name
+
+: ${verysync_enable:=NO}
+: ${verysync_home=/usr/local/etc/verysync}
+: ${verysync_log_file=/var/log/verysync.log}
+: ${verysync_user:=verysync}
+verysync_group=${verysync_group:-$verysync_user}
+
+
+command=/usr/local/bin/verysync
+pidfile=/var/run/verysync.pid
+verysync_flags="${verysync_home:+-home=${verysync_home}} ${verysync_log_file:+-logfile=${verysync_log_file}}"
+
+verysync_start() {
+    echo "Starting verysync"
+    touch ${pidfile} && chown ${verysync_user} ${pidfile}
+    touch ${verysync_log_file} && chown ${verysync_user} ${verysync_log_file}
+    /usr/sbin/daemon -cf -p ${pidfile} -u ${verysync_user} ${command} ${verysync_flags}
+}
+
+verysync_cleanup() {
+    [ -f ${pidfile} ] && rm ${pidfile}
+}
+
+run_rc_command $1

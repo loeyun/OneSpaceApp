@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# minidlnad        Starts minidlnad.
+#
+
+start() {
+    mountpoint -q /sata
+    if [ $? -ne 0 ] ; then
+    	echo "Start Aria2 Abort, No SATA"
+    	exit
+    fi
+    
+    if [ -f /sata/.storage/appblock/aria2 ] ; then
+    	echo "Start Aria2 Abort, User Disabled"
+        exit
+    fi
+    
+    /opt/bin/udp_send 127.0.0.1 800 "aria2_scan 60"
+
+    pidof aria2c
+    if [ $? -eq 0 ] ; then
+        exit
+    fi
+    
+    umask 0000
+    mkdir -p /sata/public/ARDOWNLOAD
+    chmod 777 /sata/public/ARDOWNLOAD
+
+    mkdir -p /sata/public/ARDOWNLOAD/incomplete
+    chmod 777 /sata/public/ARDOWNLOAD/incomplete
+    
+    mkdir -p /sata/.storage/aria2
+    if [ ! -f /sata/.storage/aria2/aria2.session ] ; then
+    	touch /sata/.storage/aria2/aria2.session
+    fi
+    
+    /opt/aria2/aria2c --conf=/sata/app/aria2extend/config/aria2.conf  -D
+}
+
+stop() {
+    killall aria2c
+
+    i=0    
+    while [ 1 ] ; do
+    	pidof aria2c
+    	if [ $? -ne 0 -o $i -gt 10 ] ; then
+    		break
+    	fi
+    	echo "sleep 1, wait"
+    	sleep 1
+        ((i++))
+    done
+}
+
+restart() {
+	stop
+	# Sleep needed for minidlna to restart properly
+	sleep 1
+	start "$@"
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  *)
+	echo "Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit $?

@@ -1,0 +1,9 @@
+[verysync]
+title=verysync
+description=verysync file synchronisation
+ports=22330/tcp|22331/udp
+
+[verysync-gui]
+title=Verysync-GUI
+description=Verysync web gui
+ports=8886/tcp

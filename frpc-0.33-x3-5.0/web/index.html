@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script type="text/javascript" src="/jslib/jquery-1.9.1.js?v=1"></script>
+    <!-- <script type="text/javascript" src="/jslib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/jslib/url.js"></script>
+    <script type="text/javascript" src="/jslib/jquery.easing.min.js"></script> -->
+    <link href="/bootstrap-3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <!-- <script type="text/javascript" src="/bootstrap-3.0.3/js/bootstrap.min.js"> -->
+    </script>
+    <!-- <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js?v=3"></script> -->
+    <!-- <script type="text/javascript" src="/space.util.js"></script> -->
+    <meta charset="utf-8">
+    <title>Frp客户端配置</title>
+
+    <script>
+        $(document).ready(function() {
+
+            $.ajaxSetup({
+                cache: false //关闭AJAX相应的缓存
+            });
+
+            $("#frpc").load("../bin/frpc.ini");
+            // $("#frpc").load("frpc.ini");
+
+        });
+    </script>
+</head>
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        color: #333;
+        font-size: 15px;
+        font-family: "Microsoft Yahei";
+    }
+    
+    body {
+        background: url(/images/bg.jpg) repeat;
+        background-attachment: fixed;
+        font-family: "Microsoft Yahei";
+    }
+    
+    input,
+    button,
+    select,
+    textarea {
+        font-family: "Microsoft Yahei";
+    }
+    
+    img {
+        border: none;
+    }
+    
+    #wrapper {
+        min-width: 750px;
+        min-height: 100%;
+        position: relative;
+    }
+    
+    .mybox {
+        background: #fff;
+        color: #333
+    }
+    
+    .mybox a {
+        text-decoration: none;
+        color: #333;
+    }
+    
+    .mybox a:hover {
+        text-decoration: none;
+        color: #960;
+    }
+    
+    .roundbox {
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    
+    .bodybox {
+        padding-bottom: 70px;
+    }
+</style>
+
+
+
+
+<body>
+    <div id="wrapper">
+        <div class="bodybox">
+            <div class="container">
+                <div class="mybox roundbox" style="padding:10px; margin:20px 0 20px 0;">
+                    <h3>修改保存后手动重启服务</h3>
+                    <div id="app">
+                        <form method="post" action="write.php">
+                            <textarea class="form-control" rows="40" name="frpc" id="frpc"></textarea>
+                            <div style="padding:5px 0;">
+                                <input type="submit" id="submit" value="保存"></input>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

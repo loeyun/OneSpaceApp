@@ -1,0 +1,11 @@
+[Unit]
+Description=Restart Verysync after resume
+Documentation=man:verysync(1)
+After=sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=-/usr/bin/pkill -HUP -x verysync
+
+[Install]
+WantedBy=sleep.target
